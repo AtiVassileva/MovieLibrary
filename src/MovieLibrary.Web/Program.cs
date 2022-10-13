@@ -1,6 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using MovieLibrary.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+});
 
 var app = builder.Build();
 
