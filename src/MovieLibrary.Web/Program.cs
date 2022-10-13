@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
+using MovieLibrary.Web.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -19,6 +20,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.PrepareDatabase();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
