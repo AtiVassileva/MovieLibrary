@@ -22,6 +22,6 @@ namespace MovieLibrary.Models
 
         [Required]
         public Guid AuthorId { get; set; }
-        public User? User { get; set; }
+        public User? Author { get; set; }
     }
 }

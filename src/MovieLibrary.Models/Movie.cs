@@ -31,6 +31,8 @@ namespace MovieLibrary.Models
 
         public ICollection<Genre> Genres { get; set; } = new HashSet<Genre>();
 
+        public ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
+
         public ICollection<MovieCharacter> MoviesCharacters { get; set; }
             = new HashSet<MovieCharacter>();
     }
