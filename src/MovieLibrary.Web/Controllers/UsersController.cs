@@ -47,16 +47,18 @@ namespace MovieLibrary.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([Bind("Id,Username,Password,Email")] User user)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                user.Id = Guid.NewGuid();
-                user.IsRegistered = true;
-                user.IsCurrentlyLoggedIn = false;
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(nameof(Login));
             }
-            return View(nameof(Login));
+
+            user.Id = Guid.NewGuid();
+            user.IsRegistered = true;
+            user.IsCurrentlyLoggedIn = false;
+
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Users/Login
@@ -69,15 +71,11 @@ namespace MovieLibrary.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind("Username,Password")] User user)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(user);
-            }
             var userInDb = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
 
             if (userInDb == null)
             {
-                return View(user);
+                return NotFound();
             }
 
             userInDb.IsCurrentlyLoggedIn = true;
