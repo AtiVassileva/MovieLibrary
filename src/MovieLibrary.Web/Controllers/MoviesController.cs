@@ -48,14 +48,15 @@ namespace MovieLibrary.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes")] Movie movie)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                movie.Id = Guid.NewGuid();
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(movie);
             }
-            return View(movie);
+
+            movie.Id = Guid.NewGuid();
+            _context.Add(movie);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Movies/Edit/5
@@ -107,6 +108,28 @@ namespace MovieLibrary.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddReview(Guid movieId,
+            [Bind("Id,Title, Content")] Review review)
+        {
+            var movie = await _context.Movies.FindAsync(movieId);
+
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(Details), movie);
+            }
+
+            review.Id = Guid.NewGuid();
+            review.MovieId = movieId;
+            review.AuthorId = Guid.Parse("921D27B9-8A03-4E8D-9CC5-50EF8F744F2F");
+
+            _context.Add(review);
+            await _context.SaveChangesAsync();
+
+            return View(nameof(Details), movie);
         }
 
         // GET: Movies/Delete/5
