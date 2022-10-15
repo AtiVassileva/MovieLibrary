@@ -16,6 +16,8 @@ namespace MovieLibrary.Models
         [Required]
         public string? Email { get; set; }
 
+        public ICollection<Movie> AddedMovies { get; set; } = new HashSet<Movie>();
+
         public ICollection<Movie> LikedMovies { get; set; } = new HashSet<Movie>();
 
         public ICollection<Review> Reviews { get; set; } = new HashSet<Review>();

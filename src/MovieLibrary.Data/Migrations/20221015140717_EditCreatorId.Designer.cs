@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieLibrary.Data;
 
@@ -11,9 +12,10 @@ using MovieLibrary.Data;
 namespace MovieLibrary.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221015140717_EditCreatorId")]
+    partial class EditCreatorId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,7 +78,7 @@ namespace MovieLibrary.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CreatorId")
+                    b.Property<Guid>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Director")
@@ -197,7 +199,9 @@ namespace MovieLibrary.Data.Migrations
                 {
                     b.HasOne("MovieLibrary.Models.User", "Creator")
                         .WithMany("AddedMovies")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MovieLibrary.Models.User", null)
                         .WithMany("LikedMovies")

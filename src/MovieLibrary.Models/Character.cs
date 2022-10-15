@@ -15,6 +15,9 @@ namespace MovieLibrary.Models
         [MaxLength(DescriptionMaxLength)]
         public string? Description { get; set; }
 
+        [Required]
+        public string? ImageUrl { get; set; }
+
         public string? ActorName { get; set; }
 
         public ICollection<MovieCharacter> MoviesCharacters { get; set; }

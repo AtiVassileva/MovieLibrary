@@ -35,6 +35,10 @@ namespace MovieLibrary.Data
             modelBuilder.Entity<MovieCharacter>()
                 .HasKey(mch => new {mch.MovieId, mch.CharacterId});
 
+            modelBuilder.Entity<Movie>()
+                .HasOne(m => m.Creator)
+                .WithMany(u => u.AddedMovies);
+
             base.OnModelCreating(modelBuilder);
         }
     }
