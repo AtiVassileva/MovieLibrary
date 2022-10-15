@@ -1,54 +1,147 @@
 ﻿@model MovieLibrary.Models.Movie
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = @Model.Title;
 }
-
-<h1>Details</h1>
-
-<div>
-    <h4>Movie</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Overview)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Overview)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PremiereDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PremiereDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Director)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Director)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Likes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Likes)
-        </dd>
-    </dl>
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="/Movies/Index"><i class="fa fa-home"></i>Movie List</a>
+                    <span>@Model.Title</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<section class="anime-details spad">
+    <div class="container">
+        <div class="anime__details__content">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="anime__details__pic set-bg" data-setbg="@Model.ImageUrl">
+                        <div class="comment"><i class="fa fa-thumbs-up"></i>&nbsp @Model.Likes</div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="anime__details__text">
+                        <div class="anime__details__title">
+                            <h3>@Model.Title</h3>
+                        </div>
+                        @*<div class="anime__details__rating">
+                        <div class="rating">
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star-half-o"></i></a>
+                        </div>
+                        <span>1.029 Votes</span>
+                        </div>*@
+                        <p>@Model.Overview</p>
+                        <div class="anime__details__widget">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    <ul>
+                                        <li><span>Director:</span>@Model.Director</li>
+                                        <li><span>Premiere Date:</span>@Model.PremiereDate.ToString("ddd, dd MMM yyy")</li>
+                                    </ul>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <ul>
+                                        <li><span>Genres:</span>Not shown</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="anime__details__btn">
+                            <a href="#" class="btn btn-primary"><i class="fa fa-thumbs-up"></i> Like</a>
+                            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</a>
+                            <a asp-action="Index" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 col-md-8">
+                <div class="anime__details__review">
+                    <div class="section-title">
+                        <h5>Reviews</h5>
+                    </div>
+                    <div class="anime__review__item">
+                        <div class="anime__review__item__pic">
+                            <img src="img/anime/review-1.jpg" alt="">
+                        </div>
+                        <div class="anime__review__item__text">
+                            <h6>Chris Curry - <span>1 Hour ago</span></h6>
+                            <p>
+                                whachikan Just noticed that someone categorized this as belonging to the genre
+                                "demons" LOL
+                            </p>
+                        </div>
+                    </div>
+                    <div class="anime__review__item">
+                        <div class="anime__review__item__pic">
+                            <img src="img/anime/review-2.jpg" alt="">
+                        </div>
+                        <div class="anime__review__item__text">
+                            <h6>Lewis Mann - <span>5 Hour ago</span></h6>
+                            <p>Finally it came out ages ago</p>
+                        </div>
+                    </div>
+                    <div class="anime__review__item">
+                        <div class="anime__review__item__pic">
+                            <img src="img/anime/review-3.jpg" alt="">
+                        </div>
+                        <div class="anime__review__item__text">
+                            <h6>Louis Tyler - <span>20 Hour ago</span></h6>
+                            <p>Where is the episode 15 ? Slow update! Tch</p>
+                        </div>
+                    </div>
+                    <div class="anime__review__item">
+                        <div class="anime__review__item__pic">
+                            <img src="img/anime/review-4.jpg" alt="">
+                        </div>
+                        <div class="anime__review__item__text">
+                            <h6>Chris Curry - <span>1 Hour ago</span></h6>
+                            <p>
+                                whachikan Just noticed that someone categorized this as belonging to the genre
+                                "demons" LOL
+                            </p>
+                        </div>
+                    </div>
+                    <div class="anime__review__item">
+                        <div class="anime__review__item__pic">
+                            <img src="img/anime/review-5.jpg" alt="">
+                        </div>
+                        <div class="anime__review__item__text">
+                            <h6>Lewis Mann - <span>5 Hour ago</span></h6>
+                            <p>Finally it came out ages ago</p>
+                        </div>
+                    </div>
+                    <div class="anime__review__item">
+                        <div class="anime__review__item__pic">
+                            <img src="img/anime/review-6.jpg" alt="">
+                        </div>
+                        <div class="anime__review__item__text">
+                            <h6>Louis Tyler - <span>20 Hour ago</span></h6>
+                            <p>Where is the episode 15 ? Slow update! Tch</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="anime__details__form">
+                    <div class="section-title">
+                        <h5>Your Comment</h5>
+                    </div>
+                    <form action="#">
+                        <textarea placeholder="Your Comment"></textarea>
+                        <button type="submit"><i class="fa fa-location-arrow"></i> Review</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
