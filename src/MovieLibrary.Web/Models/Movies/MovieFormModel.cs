@@ -6,6 +6,8 @@ namespace MovieLibrary.Web.Models.Movies
 {
     public class MovieFormModel
     {
+        public Guid Id { get; set; }
+
         [Required]
         [StringLength(TitleMaxLength, MinimumLength = DefaultMinLength)]
         public string Title { get; set; } = null!;
@@ -28,7 +30,7 @@ namespace MovieLibrary.Web.Models.Movies
 
         [Required]
         [Display(Name = "Genre")]
-        public Guid GenreId { get; set; }
+        public Guid? GenreId { get; set; }
 
         public ICollection<GenreSelectionModel> Genres { get; set; }
             = new HashSet<GenreSelectionModel>();

@@ -4,6 +4,7 @@ using MovieLibrary.Data;
 using MovieLibrary.Models;
 using MovieLibrary.Web.Models.Genres;
 using MovieLibrary.Web.Models.Movies;
+using MovieLibrary.Web.Models.Reviews;
 
 namespace MovieLibrary.Web.Controllers
 {
@@ -56,9 +57,18 @@ namespace MovieLibrary.Web.Controllers
                 Director = movie.Director,
                 PremiereDate = movie.PremiereDate,
                 Likes = movie.Likes,
-                GenreName =  await _context.Genres.Where(g => g.Id == movie.GenreId)
+                GenreName =  await _context.Genres
+                    .Where(g => g.Id == movie.GenreId)
                     .Select(g => g.Name)
-                    .FirstOrDefaultAsync()
+                    .FirstOrDefaultAsync(),
+                Reviews =  _context.Reviews
+                    .Where(r => r.MovieId == movie.Id)
+                    .Select(r => new ReviewFormModel
+                    {
+                        Title = r.Title!,
+                        Content = r.Content!
+                    })
+                    .ToList()
             };
 
             return View(movieModel);
@@ -110,61 +120,109 @@ namespace MovieLibrary.Web.Controllers
             }
 
             var movie = await _context.Movies.FindAsync(id);
-            return movie == null ? View("Error") : View(movie);
+
+            if (movie == null)
+            {
+                return View("Error");
+
+            }
+
+            return View(new MovieFormModel
+            {
+                Id = movie.Id,
+                Title = movie.Title!,
+                Overview = movie.Overview!,
+                Director = movie.Director!,
+                ImageUrl = movie.ImageUrl!,
+                PremiereDate = movie.PremiereDate,
+                GenreId = movie.GenreId,
+                Genres = _context.Genres
+                    .Select(g => new GenreSelectionModel
+                    {
+                        Id = g.Id,
+                        Name = g.Name
+                    }).ToList()
+            });
         }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes")] Movie movie)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes, GenreId")] MovieFormModel movie)
         {
             if (id != movie.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(movie);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MovieExists(movie.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(movie);
             }
-            return View(movie);
+            try
+            {
+                _context.Update(movie);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MovieExists(movie.Id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(Guid movieId,
-            [Bind("Id,Title, Content")] Review review)
+            [Bind("Title, Content")] ReviewFormModel reviewModel)
         {
             var movie = await _context.Movies.FindAsync(movieId);
 
+            var movieModel = new MovieDetailedModel
+            {
+                Id = movie!.Id,
+                Title = movie.Title,
+                Overview = movie.Overview,
+                ImageUrl = movie.ImageUrl,
+                Director = movie.Director,
+                PremiereDate = movie.PremiereDate,
+                Likes = movie.Likes,
+                GenreName = await _context.Genres.Where(g => g.Id == movie.GenreId)
+                    .Select(g => g.Name)
+                    .FirstOrDefaultAsync(),
+                Reviews = _context.Reviews
+                    .Where(r => r.MovieId == movie.Id)
+                    .Select(r => new ReviewFormModel
+                    {
+                        Title = r.Title!,
+                        Content = r.Content!
+                    })
+                    .ToList()
+            };
+
             if (!ModelState.IsValid)
             {
-                return View(nameof(Details), movie);
+                return View(nameof(Details), movieModel);
             }
 
-            review.Id = Guid.NewGuid();
-            review.MovieId = movieId;
-            review.AuthorId = Guid.Parse("921D27B9-8A03-4E8D-9CC5-50EF8F744F2F");
+            var review = new Review
+            {
+                Id = Guid.NewGuid(),
+                Title = reviewModel.Title,
+                Content = reviewModel.Content,
+                MovieId = movieId,
+                AuthorId = Guid.Parse("921D27B9-8A03-4E8D-9CC5-50EF8F744F2F")
+            };
 
+            movie.Reviews.Add(review);
             _context.Add(review);
             await _context.SaveChangesAsync();
 
-            return View(nameof(Details), movie);
+            return View(nameof(Details), movieModel);
         }
         
         public async Task<IActionResult> Delete(Guid? id)

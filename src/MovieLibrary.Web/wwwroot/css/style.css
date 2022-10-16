@@ -37,6 +37,9 @@ body {
 	font-family: "Mulish", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	background: #0b0c2a;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 h1,
@@ -1935,7 +1938,10 @@ ol {
 	background: #070720;
 	padding-top: 60px;
 	padding-bottom: 40px;
-	position: relative;
+    /*position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;*/
 }
 
 .page-up {
