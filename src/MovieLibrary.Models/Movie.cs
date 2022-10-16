@@ -29,7 +29,9 @@ namespace MovieLibrary.Models
 
         public User? Creator { get; set; }
 
-        public ICollection<Genre> Genres { get; set; } = new HashSet<Genre>();
+        public Guid? GenreId { get; set; }
+
+        public Genre? Genre { get; set; }
 
         public ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
 
