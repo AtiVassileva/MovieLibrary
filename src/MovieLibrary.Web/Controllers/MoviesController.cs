@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Models;
+using MovieLibrary.Web.Models.Genres;
 using MovieLibrary.Web.Models.Movies;
 
 namespace MovieLibrary.Web.Controllers
@@ -54,24 +55,48 @@ namespace MovieLibrary.Web.Controllers
                 ImageUrl = movie.ImageUrl,
                 Director = movie.Director,
                 PremiereDate = movie.PremiereDate,
-                Likes = movie.Likes
+                Likes = movie.Likes,
+                GenreName =  await _context.Genres.Where(g => g.Id == movie.GenreId)
+                    .Select(g => g.Name)
+                    .FirstOrDefaultAsync()
             };
 
             return View(movieModel);
         }
         
-        public IActionResult Create() => View();
-        
+        public IActionResult Create()
+        {
+            return View(new MovieFormModel
+            {
+                Genres = _context.Genres
+                    .Select(g => new GenreSelectionModel
+                    {
+                        Id = g.Id,
+                        Name = g.Name
+                    }).ToList()
+            });
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes")] Movie movie)
+        public async Task<IActionResult> Create([Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director, GenreId")] MovieFormModel movieFormModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(movie);
+                return View(movieFormModel);
             }
 
-            movie.Id = Guid.NewGuid();
+            var movie = new Movie
+            {
+                Id = Guid.NewGuid(),
+                Title = movieFormModel.Title,
+                Overview = movieFormModel.Overview,
+                Director = movieFormModel.Director,
+                ImageUrl = movieFormModel.ImageUrl,
+                PremiereDate = movieFormModel.PremiereDate,
+                GenreId = movieFormModel.GenreId
+            };
+
             _context.Add(movie);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

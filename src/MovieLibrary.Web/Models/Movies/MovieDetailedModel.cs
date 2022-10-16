@@ -5,5 +5,6 @@
         public string? Overview { get; set; }
         public string? Director { get; set; }
         public DateTime PremiereDate { get; set; }
+        public string? GenreName { get; set; }
     }
 }

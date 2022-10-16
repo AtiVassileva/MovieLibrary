@@ -1,4 +1,4 @@
-﻿@model MovieLibrary.Models.Movie
+﻿@model MovieLibrary.Web.Models.Movies.MovieFormModel;
 
 @{
     ViewData["Title"] = "New Movie";
@@ -33,6 +33,17 @@
                 <label asp-for="Overview" class="control-label"></label>
                 <textarea asp-for="Overview" class="form-control"></textarea>
                 <span asp-validation-for="Overview" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display: inline-block;">
+                <label asp-for="GenreId"></label>
+                <br/>
+                <select asp-for="GenreId">
+                    @foreach (var genre in Model.Genres.OrderBy(c => c.Name))
+                    {
+                        <option value="@genre.Id">@genre.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="GenreId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Submit" class="btn btn-primary" />
