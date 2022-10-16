@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Models;
+using MovieLibrary.Web.Models.Movies;
 
 namespace MovieLibrary.Web.Controllers
 {
@@ -13,37 +14,54 @@ namespace MovieLibrary.Web.Controllers
         {
             _context = context;
         }
-
-        // GET: Movies
+        
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Movies.ToListAsync());
-        }
+            var movies = await _context.Movies.ToListAsync();
 
-        // GET: Movies/Details/5
+            var movieListModels = movies
+                .Select(movie => new MovieListModel
+                {
+                    Id = movie.Id,
+                    ImageUrl = movie.ImageUrl, 
+                    Title = movie.Title, 
+                    Likes = movie.Likes
+                }).ToList();
+
+            return View(movieListModels);
+        }
+        
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null || _context.Movies == null)
+            if (id == null)
             {
-                return NotFound();
+                return View("Error");
             }
 
             var movie = await _context.Movies
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (movie == null)
             {
-                return NotFound();
+                return View("Error");
             }
 
-            return View(movie);
+            var movieModel = new MovieDetailedModel
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Overview = movie.Overview,
+                ImageUrl = movie.ImageUrl,
+                Director = movie.Director,
+                PremiereDate = movie.PremiereDate,
+                Likes = movie.Likes
+            };
+
+            return View(movieModel);
         }
-
-        // GET: Movies/Create
+        
         public IActionResult Create() => View();
-
-        // POST: Movies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes")] Movie movie)
@@ -58,26 +76,18 @@ namespace MovieLibrary.Web.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: Movies/Edit/5
+        
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null || _context.Movies == null)
+            if (id == null)
             {
-                return NotFound();
+                return View("Error");
             }
 
             var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            return View(movie);
+            return movie == null ? View("Error") : View(movie);
         }
-
-        // POST: Movies/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes")] Movie movie)
@@ -131,8 +141,7 @@ namespace MovieLibrary.Web.Controllers
 
             return View(nameof(Details), movie);
         }
-
-        // GET: Movies/Delete/5
+        
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null || _context.Movies == null)
@@ -149,8 +158,7 @@ namespace MovieLibrary.Web.Controllers
 
             return View(movie);
         }
-
-        // POST: Movies/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
