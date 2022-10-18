@@ -15,6 +15,10 @@ namespace MovieLibrary.Web.MappingConfiguration
                 .ReverseMap();
 
             // movies
+            this.CreateMap<Movie, MovieHomeModel>()
+                .ForMember(m => m.GenreName, cfg => cfg.MapFrom(m => m.Genre.Name))
+                .ReverseMap();
+
             this.CreateMap<Movie, MovieListModel>()
                 .ReverseMap();
 
@@ -22,7 +26,7 @@ namespace MovieLibrary.Web.MappingConfiguration
                 .ReverseMap();
 
             this.CreateMap<Movie, MovieDetailedModel>()
-                .ForMember(m => m.GenreName, cfg => cfg.MapFrom(m => m.Genre!.Name))
+                .ForMember(model => model.GenreName, cfg => cfg.MapFrom(m => m.Genre.Name))
                 .ReverseMap();
 
             // reviews

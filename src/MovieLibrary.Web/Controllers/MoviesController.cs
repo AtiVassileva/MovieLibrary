@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
@@ -13,10 +14,13 @@ namespace MovieLibrary.Web.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly AutoMapper.IConfigurationProvider _configuration;
+
         public MoviesController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            _configuration = mapper.ConfigurationProvider;
         }
         
         public Task<IActionResult> Index()
@@ -38,21 +42,23 @@ namespace MovieLibrary.Web.Controllers
             var movie = await _context.Movies
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (movie == null)
+            if (!MovieExists(id))
             {
                 return View("Error");
             }
 
-            var movieModel = _mapper.Map<MovieDetailedModel>(movie);
+            var movieModel = await _context.Movies
+                .ProjectTo<MovieDetailedModel>(_configuration)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            movieModel.Reviews = _mapper
+            movieModel!.Reviews = _mapper
                 .Map<IEnumerable<ReviewFormModel>>(_context.Reviews
-                    .Where(r => r.MovieId == movie.Id)
+                    .Where(r => r.MovieId == movie!.Id)
                     .ToList());
 
             return View(movieModel);
         }
-        
+
         public IActionResult Create()
         {
             return View(new MovieFormModel
@@ -209,6 +215,11 @@ namespace MovieLibrary.Web.Controllers
         private bool MovieExists(Guid id)
         {
           return _context.Movies.Any(e => e.Id == id);
+        }
+
+        private bool MovieExists(Guid? id)
+        {
+            return _context.Movies.Any(e => e.Id == id);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace MovieLibrary.Models
 
         public Guid? GenreId { get; set; }
 
-        public Genre? Genre { get; set; }
+        public Genre Genre { get; set; }
 
         public ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
 
