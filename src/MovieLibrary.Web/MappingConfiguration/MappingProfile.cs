@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MovieLibrary.Models;
+using MovieLibrary.Web.Models.Characters;
 using MovieLibrary.Web.Models.Genres;
 using MovieLibrary.Web.Models.Movies;
 using MovieLibrary.Web.Models.Reviews;
@@ -22,7 +23,9 @@ namespace MovieLibrary.Web.MappingConfiguration
             this.CreateMap<Movie, MovieListModel>()
                 .ReverseMap();
 
-            this.CreateMap<Movie, MovieFormModel>()
+            this.CreateMap<Movie, MovieFormModel>();
+
+            this.CreateMap<MovieFormModel, Movie>()
                 .ReverseMap();
 
             this.CreateMap<Movie, MovieDetailedModel>()
@@ -31,6 +34,13 @@ namespace MovieLibrary.Web.MappingConfiguration
 
             // reviews
             this.CreateMap<Review, ReviewFormModel>()
+                .ReverseMap();
+
+            // characters
+            this.CreateMap<Character, CharacterListModel>()
+                .ReverseMap();
+
+            this.CreateMap<Character, CharacterFormModel>()
                 .ReverseMap();
         }
     }
