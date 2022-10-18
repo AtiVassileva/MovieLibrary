@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Models;
@@ -11,26 +12,20 @@ namespace MovieLibrary.Web.Controllers
     public class MoviesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public MoviesController(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+        public MoviesController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         
-        public async Task<IActionResult> Index()
+        public Task<IActionResult> Index()
         {
-            var movies = await _context.Movies.ToListAsync();
-
-            var movieListModels = movies
-                .Select(movie => new MovieListModel
-                {
-                    Id = movie.Id,
-                    ImageUrl = movie.ImageUrl, 
-                    Title = movie.Title, 
-                    Likes = movie.Likes
-                }).ToList();
-
-            return View(movieListModels);
+            var movieListModels =  _mapper
+                .Map<IEnumerable<MovieListModel>>
+                    (_context.Movies.ToList());
+            
+            return Task.FromResult<IActionResult>(View(movieListModels));
         }
         
         public async Task<IActionResult> Details(Guid? id)
@@ -48,28 +43,12 @@ namespace MovieLibrary.Web.Controllers
                 return View("Error");
             }
 
-            var movieModel = new MovieDetailedModel
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Overview = movie.Overview,
-                ImageUrl = movie.ImageUrl,
-                Director = movie.Director,
-                PremiereDate = movie.PremiereDate,
-                Likes = movie.Likes,
-                GenreName =  await _context.Genres
-                    .Where(g => g.Id == movie.GenreId)
-                    .Select(g => g.Name)
-                    .FirstOrDefaultAsync(),
-                Reviews =  _context.Reviews
+            var movieModel = _mapper.Map<MovieDetailedModel>(movie);
+
+            movieModel.Reviews = _mapper
+                .Map<IEnumerable<ReviewFormModel>>(_context.Reviews
                     .Where(r => r.MovieId == movie.Id)
-                    .Select(r => new ReviewFormModel
-                    {
-                        Title = r.Title!,
-                        Content = r.Content!
-                    })
-                    .ToList()
-            };
+                    .ToList());
 
             return View(movieModel);
         }
@@ -78,12 +57,9 @@ namespace MovieLibrary.Web.Controllers
         {
             return View(new MovieFormModel
             {
-                Genres = _context.Genres
-                    .Select(g => new GenreSelectionModel
-                    {
-                        Id = g.Id,
-                        Name = g.Name
-                    }).ToList()
+                Genres = _mapper
+                    .Map<IEnumerable<GenreSelectionModel>>
+                        (_context.Genres.ToList())
             });
         }
 
@@ -96,19 +72,11 @@ namespace MovieLibrary.Web.Controllers
                 return View(movieFormModel);
             }
 
-            var movie = new Movie
-            {
-                Id = Guid.NewGuid(),
-                Title = movieFormModel.Title,
-                Overview = movieFormModel.Overview,
-                Director = movieFormModel.Director,
-                ImageUrl = movieFormModel.ImageUrl,
-                PremiereDate = movieFormModel.PremiereDate,
-                GenreId = movieFormModel.GenreId
-            };
+            var movie = _mapper.Map<Movie>(movieFormModel);
 
             _context.Add(movie);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
         
@@ -127,27 +95,17 @@ namespace MovieLibrary.Web.Controllers
 
             }
 
-            return View(new MovieFormModel
-            {
-                Id = movie.Id,
-                Title = movie.Title!,
-                Overview = movie.Overview!,
-                Director = movie.Director!,
-                ImageUrl = movie.ImageUrl!,
-                PremiereDate = movie.PremiereDate,
-                GenreId = movie.GenreId,
-                Genres = _context.Genres
-                    .Select(g => new GenreSelectionModel
-                    {
-                        Id = g.Id,
-                        Name = g.Name
-                    }).ToList()
-            });
+            var movieModel = _mapper.Map<MovieFormModel>(movie);
+            movieModel.Genres = _mapper
+                .Map<IEnumerable<GenreSelectionModel>>
+                    (_context.Genres.ToList());
+
+            return View(movieModel);
         }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes, GenreId")] MovieFormModel movie)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes, GenreId")] Movie movie)
         {
             if (id != movie.Id)
             {
@@ -156,7 +114,11 @@ namespace MovieLibrary.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(movie);
+                var movieModel = _mapper.Map<MovieFormModel>(movie);
+                movieModel.Genres = _mapper
+                    .Map<IEnumerable<GenreSelectionModel>>
+                        (_context.Genres.ToList());
+                return View(movieModel);
             }
             try
             {
@@ -182,41 +144,27 @@ namespace MovieLibrary.Web.Controllers
         {
             var movie = await _context.Movies.FindAsync(movieId);
 
-            var movieModel = new MovieDetailedModel
+            if (movie == null)
             {
-                Id = movie!.Id,
-                Title = movie.Title,
-                Overview = movie.Overview,
-                ImageUrl = movie.ImageUrl,
-                Director = movie.Director,
-                PremiereDate = movie.PremiereDate,
-                Likes = movie.Likes,
-                GenreName = await _context.Genres.Where(g => g.Id == movie.GenreId)
-                    .Select(g => g.Name)
-                    .FirstOrDefaultAsync(),
-                Reviews = _context.Reviews
+                return NotFound();
+            }
+
+            var movieModel = _mapper.Map<MovieDetailedModel>(movie);
+
+            movieModel.Reviews = _mapper
+                .Map<IEnumerable<ReviewFormModel>>(_context.Reviews
                     .Where(r => r.MovieId == movie.Id)
-                    .Select(r => new ReviewFormModel
-                    {
-                        Title = r.Title!,
-                        Content = r.Content!
-                    })
-                    .ToList()
-            };
+                    .ToList());
 
             if (!ModelState.IsValid)
             {
                 return View(nameof(Details), movieModel);
             }
 
-            var review = new Review
-            {
-                Id = Guid.NewGuid(),
-                Title = reviewModel.Title,
-                Content = reviewModel.Content,
-                MovieId = movieId,
-                AuthorId = Guid.Parse("921D27B9-8A03-4E8D-9CC5-50EF8F744F2F")
-            };
+            var review = _mapper.Map<Review>(reviewModel);
+            review.Id = Guid.NewGuid();
+            review.MovieId = movieId;
+            review.AuthorId = Guid.Parse("921D27B9-8A03-4E8D-9CC5-50EF8F744F2F");
 
             movie.Reviews.Add(review);
             _context.Add(review);
@@ -227,7 +175,7 @@ namespace MovieLibrary.Web.Controllers
         
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null || _context.Movies == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -239,18 +187,16 @@ namespace MovieLibrary.Web.Controllers
                 return NotFound();
             }
 
-            return View(movie);
+            var movieModel = _mapper.Map<MovieDetailedModel>(movie);
+            return View(movieModel);
         }
         
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            if (_context.Movies == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Movies'  is null.");
-            }
             var movie = await _context.Movies.FindAsync(id);
+
             if (movie != null)
             {
                 _context.Movies.Remove(movie);

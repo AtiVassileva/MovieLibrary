@@ -32,7 +32,7 @@ namespace MovieLibrary.Web.Models.Movies
         [Display(Name = "Genre")]
         public Guid? GenreId { get; set; }
 
-        public ICollection<GenreSelectionModel> Genres { get; set; }
+        public IEnumerable<GenreSelectionModel> Genres { get; set; }
             = new HashSet<GenreSelectionModel>();
     }
 }
