@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Models;
+using MovieLibrary.Web.Infrastructure;
 using MovieLibrary.Web.Models.Characters;
 
 namespace MovieLibrary.Web.Controllers
@@ -39,21 +40,24 @@ namespace MovieLibrary.Web.Controllers
                 return NotFound();
             }
 
-            return View(character);
+            var characterModel = _mapper.Map<CharacterDetailedModel>(character);
+            return View(characterModel);
         }
         
         public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name, ImageUrl,ActorName, Description")] Character character)
+        public async Task<IActionResult> Create([Bind("Id,Name, ImageUrl,ActorName, Description")] CharacterFormModel characterModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(character);
+                return View(characterModel);
             }
 
-            character.Id = Guid.NewGuid();
+            var character = _mapper.Map<Character>(characterModel);
+            character.CreatorId = this.User.GetId();
+
             _context.Add(character);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

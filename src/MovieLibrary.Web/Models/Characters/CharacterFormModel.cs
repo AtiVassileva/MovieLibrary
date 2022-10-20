@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using static MovieLibrary.Models.Common.DataConstants;
 
 namespace MovieLibrary.Web.Models.Characters
@@ -13,10 +14,12 @@ namespace MovieLibrary.Web.Models.Characters
 
         [Required]
         [Url]
+        [DisplayName("Image URL")]
         public string ImageUrl { get; set; } = null!;
 
         [Required]
         [StringLength(NameMaxLength, MinimumLength = DefaultMinLength)]
+        [DisplayName("Actor name")]
         public string ActorName { get; set; } = null!;
 
         [Required]

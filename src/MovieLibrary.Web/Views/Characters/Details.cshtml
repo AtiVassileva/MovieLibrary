@@ -1,36 +1,74 @@
-﻿@model MovieLibrary.Models.Character
+﻿@using MovieLibrary.Web.Infrastructure
+@model MovieLibrary.Web.Models.Characters.CharacterDetailedModel
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+@{
+    ViewData["Title"] = @Model.Name;
+}
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="/Characters/Index"><i class="fa fa-home"></i>Characters List</a>
+                    <span>@Model.Name</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div>
-    <h4>Character</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ActorName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ActorName)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<section class="anime-details spad">
+    <div class="container">
+        <div class="anime__details__content">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="anime__details__pic set-bg" data-setbg="@Model.ImageUrl">
+                        @*<div class="comment"><i class="fa fa-thumbs-up"></i>&nbsp @Model.Likes</div>*@
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="anime__details__text">
+                        <div class="anime__details__title">
+                            <h3>@Model.Name</h3>
+                        </div>
+                        @*<div class="anime__details__rating">
+                        <div class="rating">
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star-half-o"></i></a>
+                        </div>
+                        <span>1.029 Votes</span>
+                        </div>*@
+                        <p>@Model.Description</p>
+                        <div class="anime__details__widget">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8">
+                                    <ul>
+                                        <li><span>Played by:</span>@Model.ActorName</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="anime__details__btn">
+                            @if (this.User.GetId() == Model.CreatorId)
+                            {
+                                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</a>
+                                <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                            }
+                            else
+                            {
+                                <a href="#" class="btn btn-primary"><i class="fa fa-thumbs-up"></i> Like</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

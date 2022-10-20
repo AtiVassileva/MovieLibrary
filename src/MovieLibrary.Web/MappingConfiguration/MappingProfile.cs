@@ -40,6 +40,9 @@ namespace MovieLibrary.Web.MappingConfiguration
 
             this.CreateMap<Character, CharacterFormModel>()
                 .ReverseMap();
+
+            this.CreateMap<Character, CharacterDetailedModel>()
+                .ReverseMap();
         }
     }
 }
