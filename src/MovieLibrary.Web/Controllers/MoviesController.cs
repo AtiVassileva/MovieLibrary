@@ -60,6 +60,32 @@ namespace MovieLibrary.Web.Controllers
             return View(movieModel);
         }
 
+        public async Task<IActionResult> Like(Guid id)
+        {
+            var movie = await _context.Movies.FindAsync(id);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == this.User.GetId());
+
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
+
+            movie.Likes++;
+            currentUser.LikedMovies.Add(movie);
+
+            await _context.SaveChangesAsync();
+
+            var movieModel = _mapper.Map<MovieDetailedModel>(movie);
+            return View(nameof(Details), movieModel);
+        }
+
         public IActionResult Create()
         {
             return View(new MovieFormModel
