@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Models;
 
 namespace MovieLibrary.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext()
         {
@@ -14,7 +15,6 @@ namespace MovieLibrary.Data
         {
         }
 
-        public DbSet<User> Users { get; set; } = null!;
         public DbSet<Movie> Movies { get; set; } = null!;
         public DbSet<Character> Characters { get; set; } = null!;
         public DbSet<Genre> Genres { get; set; } = null!;

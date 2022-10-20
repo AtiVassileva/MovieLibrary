@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Models;
+using MovieLibrary.Web.Infrastructure;
 using MovieLibrary.Web.Models.Genres;
 using MovieLibrary.Web.Models.Movies;
 using MovieLibrary.Web.Models.Reviews;
@@ -79,7 +80,7 @@ namespace MovieLibrary.Web.Controllers
             }
 
             var movie = _mapper.Map<Movie>(movieFormModel);
-
+            movie.CreatorId = User.GetId();
             _context.Add(movie);
             await _context.SaveChangesAsync();
 
@@ -170,7 +171,7 @@ namespace MovieLibrary.Web.Controllers
             var review = _mapper.Map<Review>(reviewModel);
             review.Id = Guid.NewGuid();
             review.MovieId = movieId;
-            review.AuthorId = Guid.Parse("921D27B9-8A03-4E8D-9CC5-50EF8F744F2F");
+            review.AuthorId = User.GetId();
 
             movie.Reviews.Add(review);
             _context.Add(review);

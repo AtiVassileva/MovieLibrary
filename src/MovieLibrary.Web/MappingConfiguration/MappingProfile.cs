@@ -17,19 +17,17 @@ namespace MovieLibrary.Web.MappingConfiguration
 
             // movies
             this.CreateMap<Movie, MovieHomeModel>()
-                .ForMember(m => m.GenreName, cfg => cfg.MapFrom(m => m.Genre.Name))
+                .ForMember(m => m.GenreName, cfg => cfg.MapFrom(m => m.Genre!.Name))
                 .ReverseMap();
 
             this.CreateMap<Movie, MovieListModel>()
                 .ReverseMap();
 
-            this.CreateMap<Movie, MovieFormModel>();
-
-            this.CreateMap<MovieFormModel, Movie>()
+            this.CreateMap<Movie, MovieFormModel>()
                 .ReverseMap();
 
             this.CreateMap<Movie, MovieDetailedModel>()
-                .ForMember(model => model.GenreName, cfg => cfg.MapFrom(m => m.Genre.Name))
+                .ForMember(model => model.GenreName, cfg => cfg.MapFrom(m => m.Genre!.Name))
                 .ReverseMap();
 
             // reviews

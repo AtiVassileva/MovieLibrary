@@ -20,6 +20,10 @@ namespace MovieLibrary.Models
 
         public string? ActorName { get; set; }
 
+        public string? CreatorId { get; set; }
+
+        public User? Creator { get; set; }
+
         public ICollection<MovieCharacter> MoviesCharacters { get; set; }
             = new HashSet<MovieCharacter>();
     }

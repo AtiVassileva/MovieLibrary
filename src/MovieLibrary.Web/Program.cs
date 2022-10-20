@@ -2,8 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Web.Infrastructure;
 using MovieLibrary.Web.MappingConfiguration;
+using Microsoft.AspNetCore.Identity;
+using MovieLibrary.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var configuration = builder.Configuration;
 
 builder.Services.AddControllersWithViews();
@@ -12,6 +15,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -28,6 +34,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();;
 
 app.UseAuthorization();
 

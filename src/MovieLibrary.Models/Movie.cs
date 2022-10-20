@@ -25,13 +25,13 @@ namespace MovieLibrary.Models
 
         public int Likes { get; set; }
 
-        public Guid? CreatorId { get; set; }
+        public string? CreatorId { get; set; }
 
         public User? Creator { get; set; }
 
         public Guid? GenreId { get; set; }
 
-        public Genre Genre { get; set; }
+        public Genre? Genre { get; set; }
 
         public ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
 
