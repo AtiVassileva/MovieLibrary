@@ -14,7 +14,7 @@
                                 <div class="hero__text">
                                     <div class="label">@movie.GenreName</div>
                                     <h2>@movie.Title</h2>
-                                    <p>@movie.Overview![..100] + "..."</p>
+                                    <p>@(movie.Overview![..100] + "...")</p>
                                     <a href="/Movies/Details/@movie.Id"><span>See more</span> <i class="fa fa-angle-right"></i></a>
                                 </div>
                             </div>
