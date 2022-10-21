@@ -58,14 +58,25 @@
                         <div class="anime__details__btn">
                             @if (this.User.GetId() == Model.CreatorId)
                             {
+                                <a asp-action="Assign" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="fa fa-list"></i> Assign to movie</a>
                                 <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</a>
                                 <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
                             }
-                            else
-                            {
-                                <a href="#" class="btn btn-primary"><i class="fa fa-thumbs-up"></i> Like</a>
-                            }
                         </div>
+                        <br/>
+                        <h4>Movies:</h4>
+                        <br/>
+                        @foreach (var item in Model.Movies)
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <div class="product__item" style="height: 30px;">
+                                    <a href="/Movies/Details/@item.Id">
+                                        <div class="product__item__pic set-bg" data-setbg="@item.ImageUrl">
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

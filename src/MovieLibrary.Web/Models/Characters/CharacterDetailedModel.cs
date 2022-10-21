@@ -1,4 +1,6 @@
-﻿namespace MovieLibrary.Web.Models.Characters
+﻿using MovieLibrary.Web.Models.Movies;
+
+namespace MovieLibrary.Web.Models.Characters
 {
     public class CharacterDetailedModel
     {
@@ -8,5 +10,7 @@
         public string? ActorName { get; set; }
         public string? Description { get; set; }
         public string? CreatorId { get; set; }
+        public ICollection<MovieCharacterModel> Movies { get; set; } 
+            = new HashSet<MovieCharacterModel>();
     }
 }

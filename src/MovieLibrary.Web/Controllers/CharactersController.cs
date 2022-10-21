@@ -5,6 +5,7 @@ using MovieLibrary.Data;
 using MovieLibrary.Models;
 using MovieLibrary.Web.Infrastructure;
 using MovieLibrary.Web.Models.Characters;
+using MovieLibrary.Web.Models.Movies;
 
 namespace MovieLibrary.Web.Controllers
 {
@@ -41,6 +42,15 @@ namespace MovieLibrary.Web.Controllers
             }
 
             var characterModel = _mapper.Map<CharacterDetailedModel>(character);
+            characterModel.Movies = _context.MovieCharacters
+                .Where(mch => mch.CharacterId == character.Id)
+                .Select(x => new MovieCharacterModel
+                {
+                    Id = x.MovieId,
+                    ImageUrl = x.Movie!.ImageUrl
+                })
+                .ToList();
+
             return View(characterModel);
         }
         
