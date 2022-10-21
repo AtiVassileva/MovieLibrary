@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using MovieLibrary.Web.Models.Characters;
 using MovieLibrary.Web.Models.Reviews;
 
 namespace MovieLibrary.Web.Models.Movies
@@ -14,5 +15,7 @@ namespace MovieLibrary.Web.Models.Movies
         public string? CreatorId { get; set; }
         public IEnumerable<ReviewFormModel> Reviews { get; set; }
             = new HashSet<ReviewFormModel>();
+        public IEnumerable<CharacterMovieModel> Characters { get; set; }
+            = new HashSet<CharacterMovieModel>();
     }
 }

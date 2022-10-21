@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Models;
 using MovieLibrary.Web.Infrastructure;
+using MovieLibrary.Web.Models.Characters;
 using MovieLibrary.Web.Models.Genres;
 using MovieLibrary.Web.Models.Movies;
 using MovieLibrary.Web.Models.Reviews;
@@ -43,19 +44,29 @@ namespace MovieLibrary.Web.Controllers
             var movie = await _context.Movies
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (!MovieExists(id))
+            if (movie == null)
             {
                 return View("Error");
             }
 
             var movieModel = await _context.Movies
                 .ProjectTo<MovieDetailedModel>(_configuration)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == movie.Id);
 
             movieModel!.Reviews = _mapper
                 .Map<IEnumerable<ReviewFormModel>>(_context.Reviews
-                    .Where(r => r.MovieId == movie!.Id)
+                    .Where(r => r.MovieId == movie.Id)
                     .ToList());
+
+            movieModel!.Characters = _context.MovieCharacters
+                .Where(mch => mch.MovieId == movie.Id)
+                .Select(x => new CharacterMovieModel
+                {
+                    Id = x.CharacterId,
+                    ImageUrl = x.Character!.ImageUrl,
+                    Name = x.Character.Name
+                })
+                .ToList();
 
             return View(movieModel);
         }
