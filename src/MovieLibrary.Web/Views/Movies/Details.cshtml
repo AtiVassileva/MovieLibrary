@@ -67,20 +67,19 @@
                         <br/>
                         <br/>
                         <h4>Characters:</h4>
-                        <br/>
-                        @foreach (var item in Model.Characters)
-                        {
-                            <div class="col-lg-3 col-md-3 col-sm-3">
-                                <div class="product__item" style="height: 30px;">
-                                    <a href="/Characters/Details/@item.Id">
-                                        <div class="product__item__pic set-bg" data-setbg="@item.ImageUrl">
-                                            <div class="comment"><i class="fa fa-thumbs-up"></i>&nbsp;@item.Name</div>
-                                        </div>
-                                    </a>
+                            <br/>
+                            <div class="anime__details__widget">
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-8">
+                                        <ul>
+                                            @foreach (var item in Model.Characters)
+                                            {
+                                                <li><a href="/Characters/Details/@item.Id">@item.Name</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        }
-                            
                         </div>
                     </div>
                 </div>

@@ -63,7 +63,6 @@ namespace MovieLibrary.Web.Controllers
                 .Select(x => new CharacterMovieModel
                 {
                     Id = x.CharacterId,
-                    ImageUrl = x.Character!.ImageUrl,
                     Name = x.Character.Name
                 })
                 .ToList();
