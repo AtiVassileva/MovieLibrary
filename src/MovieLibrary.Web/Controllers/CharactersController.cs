@@ -81,11 +81,14 @@ namespace MovieLibrary.Web.Controllers
             }
 
             var character = await _context.Characters.FindAsync(id);
+
             if (character == null)
             {
                 return NotFound();
             }
-            return View(character);
+
+            var characterModel = _mapper.Map<CharacterFormModel>(character);
+            return View(characterModel);
         }
         
         [HttpPost]
@@ -97,27 +100,26 @@ namespace MovieLibrary.Web.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(character);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CharacterExists(character.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                var characterModel = _mapper.Map<CharacterFormModel>(character);
+                return View(characterModel);
             }
-            return View(character);
+            try
+            {
+                _context.Update(character);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CharacterExists(character.Id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
         
         public async Task<IActionResult> Delete(Guid? id)
