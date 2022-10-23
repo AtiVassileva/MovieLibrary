@@ -64,22 +64,25 @@
                             {
                                 <a asp-action="Like" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="fa fa-thumbs-up"></i> Like</a>
                             }
-                        <br/>
-                        <br/>
-                        <h4>Characters:</h4>
-                            <br/>
-                            <div class="anime__details__widget">
-                                <div class="row">
-                                    <div class="col-lg-8 col-md-8">
-                                        <ul>
-                                            @foreach (var item in Model.Characters)
-                                            {
-                                                <li><a href="/Characters/Details/@item.Id">@item.Name</a></li>
-                                            }
-                                        </ul>
+                            <br />
+                            <br />
+                            @if (Model.Characters.Any())
+                            {
+                                <h4>Characters:</h4>
+                                <br />
+                                <div class="anime__details__widget">
+                                    <div class="row">
+                                        <div class="col-lg-8 col-md-8">
+                                            <ul>
+                                                @foreach (var item in Model.Characters)
+                                                {
+                                                    <li><a href="/Characters/Details/@item.Id">@item.Name</a></li>
+                                                }
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -106,7 +109,7 @@
                         <h5>Write a review</h5>
                     </div>
                     <form asp-action="AddReview" asp-route-movieId="@Model?.Id">
-                        <input name="Title" class="form-control" placeholder="Type review title..."/>
+                        <input name="Title" class="form-control" placeholder="Type review title..." />
                         <textarea name="content" placeholder="Type your review here..."></textarea>
                         <button type="submit"><i class="fa fa-location-arrow"></i> Publish</button>
                     </form>

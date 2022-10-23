@@ -63,21 +63,24 @@
                                 <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
                             }
                         </div>
-                        <br/>
-                        <h4>Movies:</h4>
-                        <br/>
-                        <div class="anime__details__widget">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-8">
-                                    <ul>
-                                        @foreach (var item in Model.Movies)
-                                        {
-                                            <li><a href="/Movies/Details/@item.Id">@item.Title</a></li>
-                                        }
-                                    </ul>
+                        <br />
+                        @if (Model.Movies.Any())
+                        {
+                            <h4>Movies:</h4>
+                            <br />
+                            <div class="anime__details__widget">
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-8">
+                                        <ul>
+                                            @foreach (var item in Model.Movies)
+                                            {
+                                                <li><a href="/Movies/Details/@item.Id">@item.Title</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
