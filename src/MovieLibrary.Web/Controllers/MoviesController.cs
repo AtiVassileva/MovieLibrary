@@ -63,7 +63,7 @@ namespace MovieLibrary.Web.Controllers
                 .Select(x => new CharacterMovieModel
                 {
                     Id = x.CharacterId,
-                    Name = x.Character.Name
+                    Name = x.Character!.Name
                 })
                 .ToList();
 
@@ -205,7 +205,6 @@ namespace MovieLibrary.Web.Controllers
             }
 
             var review = _mapper.Map<Review>(reviewModel);
-            review.Id = Guid.NewGuid();
             review.MovieId = movieId;
             review.AuthorId = User.GetId();
 
@@ -252,11 +251,6 @@ namespace MovieLibrary.Web.Controllers
         private bool MovieExists(Guid id)
         {
           return _context.Movies.Any(e => e.Id == id);
-        }
-
-        private bool MovieExists(Guid? id)
-        {
-            return _context.Movies.Any(e => e.Id == id);
         }
     }
 }

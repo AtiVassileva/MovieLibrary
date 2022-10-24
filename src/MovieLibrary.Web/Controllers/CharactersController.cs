@@ -136,18 +136,8 @@ namespace MovieLibrary.Web.Controllers
                 return NotFound();
             }
 
-            var characterModel = new CharacterAssignModel
-            {
-                Id = character.Id,
-                Name = character.Name,
-                Movies = _context.Movies
-                    .Select(m => new MovieCharacterModel
-                    {
-                        Id = m.Id,
-                        Title = m.Title
-                    })
-                    .ToList()
-            };
+            var characterModel = _mapper.Map<CharacterAssignModel>(character);
+            characterModel.Movies = _mapper.Map<IEnumerable<MovieCharacterModel>>(_context.Movies.ToList());
 
             return View(characterModel);
         }
@@ -158,29 +148,17 @@ namespace MovieLibrary.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var characterModel = new CharacterAssignModel
-                {
-                    Id = characterAssignModel.Id,
-                    Name = characterAssignModel.Name,
-                    Movies = _context.Movies
-                        .Select(m => new MovieCharacterModel
-                        {
-                            Id = m.Id,
-                            Title = m.Title
-                        })
-                        .ToList()
-                };
-                return View(characterModel);
+                characterAssignModel.Movies = _mapper
+                    .Map<IEnumerable<MovieCharacterModel>>
+                        (_context.Movies.ToList());
+
+                return View(characterAssignModel);
             }
 
-            var movieCharacter = new MovieCharacter
-            {
-                CharacterId = characterAssignModel.Id,
-                MovieId = characterAssignModel.MovieId
-            };
-
+            var movieCharacter = _mapper.Map<MovieCharacter>(characterAssignModel);
             _context.MovieCharacters.Add(movieCharacter);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Details), new {id = characterAssignModel.Id });
         }
 
