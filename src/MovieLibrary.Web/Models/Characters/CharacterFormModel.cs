@@ -12,8 +12,8 @@ namespace MovieLibrary.Web.Models.Characters
         [StringLength(NameMaxLength, MinimumLength = DefaultMinLength)]
         public string Name { get; set; } = null!;
 
-        [Required]
         [Url]
+        [Required]
         [DisplayName("Image URL")]
         public string ImageUrl { get; set; } = null!;
 

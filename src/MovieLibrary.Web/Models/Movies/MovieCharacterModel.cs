@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace MovieLibrary.Web.Models.Movies
+﻿namespace MovieLibrary.Web.Models.Movies
 {
     public class MovieCharacterModel
     {

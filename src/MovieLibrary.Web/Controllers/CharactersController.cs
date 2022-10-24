@@ -121,7 +121,69 @@ namespace MovieLibrary.Web.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-        
+
+        public async Task<IActionResult> Assign(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var character = await _context.Characters.FindAsync(id);
+
+            if (character == null)
+            {
+                return NotFound();
+            }
+
+            var characterModel = new CharacterAssignModel
+            {
+                Id = character.Id,
+                Name = character.Name,
+                Movies = _context.Movies
+                    .Select(m => new MovieCharacterModel
+                    {
+                        Id = m.Id,
+                        Title = m.Title
+                    })
+                    .ToList()
+            };
+
+            return View(characterModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Assign(Guid id, [Bind("Id, Name, MovieId")] CharacterAssignModel characterAssignModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                var characterModel = new CharacterAssignModel
+                {
+                    Id = characterAssignModel.Id,
+                    Name = characterAssignModel.Name,
+                    Movies = _context.Movies
+                        .Select(m => new MovieCharacterModel
+                        {
+                            Id = m.Id,
+                            Title = m.Title
+                        })
+                        .ToList()
+                };
+                return View(characterModel);
+            }
+
+            var movieCharacter = new MovieCharacter
+            {
+                CharacterId = characterAssignModel.Id,
+                MovieId = characterAssignModel.MovieId
+            };
+
+            _context.MovieCharacters.Add(movieCharacter);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new {id = characterAssignModel.Id });
+        }
+
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
