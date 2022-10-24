@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Models;
@@ -7,8 +9,6 @@ using MovieLibrary.Web.Models.Characters;
 using MovieLibrary.Web.Models.Genres;
 using MovieLibrary.Web.Models.Movies;
 using MovieLibrary.Web.Models.Reviews;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 namespace MovieLibrary.Web.Controllers
 {
@@ -59,7 +59,7 @@ namespace MovieLibrary.Web.Controllers
                 .ToListAsync();
 
             movieModel!.Characters = await _context.MovieCharacters
-                .Where(mch => mch.MovieId == movie.Id)
+                    .Where(ch => ch.MovieId == movie.Id)
                 .ProjectTo<CharacterMovieModel>(_configuration)
                 .ToListAsync();
 
@@ -202,7 +202,7 @@ namespace MovieLibrary.Web.Controllers
 
             var review = _mapper.Map<Review>(reviewModel);
             review.MovieId = movieId;
-            review.AuthorId = User.GetId();
+            review.AuthorId = this.User.GetId();
 
             movie.Reviews.Add(review);
             _context.Add(review);
