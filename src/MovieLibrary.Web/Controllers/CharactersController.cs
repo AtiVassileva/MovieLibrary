@@ -70,7 +70,7 @@ namespace MovieLibrary.Web.Controllers
 
             _context.Add(character);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new {id = character.Id});
         }
         
         public async Task<IActionResult> Edit(Guid? id)
@@ -93,7 +93,7 @@ namespace MovieLibrary.Web.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name. ImageUrl,Description,ActorName")] Character character)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name, ImageUrl,Description,ActorName")] Character character)
         {
             if (id != character.Id)
             {
@@ -119,7 +119,7 @@ namespace MovieLibrary.Web.Controllers
 
                 throw;
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new {id = character.Id});
         }
 
         public async Task<IActionResult> Assign(Guid? id)
