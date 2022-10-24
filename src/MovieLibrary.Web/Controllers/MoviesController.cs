@@ -53,19 +53,15 @@ namespace MovieLibrary.Web.Controllers
                 .ProjectTo<MovieDetailedModel>(_configuration)
                 .FirstOrDefaultAsync(m => m.Id == movie.Id);
 
-            movieModel!.Reviews = _mapper
-                .Map<IEnumerable<ReviewFormModel>>(_context.Reviews
-                    .Where(r => r.MovieId == movie.Id)
-                    .ToList());
+            movieModel!.Reviews = await _context.Reviews
+                .Where(r => r.MovieId == movie.Id)
+                .ProjectTo<ReviewFormModel>(_configuration)
+                .ToListAsync();
 
-            movieModel!.Characters = _context.MovieCharacters
+            movieModel!.Characters = await _context.MovieCharacters
                 .Where(mch => mch.MovieId == movie.Id)
-                .Select(x => new CharacterMovieModel
-                {
-                    Id = x.CharacterId,
-                    Name = x.Character!.Name
-                })
-                .ToList();
+                .ProjectTo<CharacterMovieModel>(_configuration)
+                .ToListAsync();
 
             return View(movieModel);
         }
@@ -214,7 +210,23 @@ namespace MovieLibrary.Web.Controllers
 
             return View(nameof(Details), movieModel);
         }
-        
+
+        public async Task<IActionResult> DeleteReview(Guid id)
+        {
+            var review = await _context.Reviews
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            _context.Reviews.Remove(review);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = review.MovieId });
+        }
+
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)

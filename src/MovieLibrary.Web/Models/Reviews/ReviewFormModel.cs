@@ -5,6 +5,7 @@ namespace MovieLibrary.Web.Models.Reviews
 {
     public class ReviewFormModel
     {
+        public Guid Id { get; set; }
         [Required]
         [StringLength(TitleMaxLength, MinimumLength = DefaultMinLength)]
         public string Title { get; set; } = null!;
@@ -12,5 +13,7 @@ namespace MovieLibrary.Web.Models.Reviews
         [Required]
         [StringLength(DescriptionMaxLength, MinimumLength = DefaultMinLength)]
         public string Content { get; set; } = null!;
+
+        public string? AuthorName { get; set; }
     }
 }

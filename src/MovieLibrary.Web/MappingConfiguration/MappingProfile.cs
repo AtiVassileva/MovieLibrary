@@ -35,6 +35,8 @@ namespace MovieLibrary.Web.MappingConfiguration
 
             // reviews
             this.CreateMap<Review, ReviewFormModel>()
+                .ForMember(r => r.AuthorName, 
+                    cfg => cfg.MapFrom(r => r.Author!.UserName))
                 .ReverseMap();
 
             // characters
@@ -55,6 +57,10 @@ namespace MovieLibrary.Web.MappingConfiguration
                 .ForMember(mch => mch.CharacterId,
                     cfg =>
                         cfg.MapFrom(ch => ch.Id))
+                .ReverseMap();
+
+            this.CreateMap<MovieCharacter, CharacterMovieModel>()
+                .ForMember(ch => ch.Name, cfg => cfg.MapFrom(mch => mch.Character!.Name))
                 .ReverseMap();
         }
     }
