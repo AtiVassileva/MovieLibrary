@@ -208,7 +208,7 @@ namespace MovieLibrary.Web.Controllers
             _context.Add(review);
             await _context.SaveChangesAsync();
 
-            return View(nameof(Details), movieModel);
+            return RedirectToAction(nameof(Details), new { id = movieModel.Id });
         }
 
         public async Task<IActionResult> DeleteReview(Guid id)

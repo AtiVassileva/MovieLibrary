@@ -99,9 +99,9 @@
                         <div class="anime__review__item">
                             <div class="anime__review__item__text">
                                 <h6>
-                                    @review.Title <span> - @review.AuthorName</span>
+                                    @review.Title <span> - @review.AuthorEmail</span>
 
-                                    @if (review.AuthorName == this.User.Identity!.Name)
+                                    @if (review.AuthorEmail == this.User.Identity!.Name)
                                     {
                                         <a asp-action="DeleteReview" asp-route-id="@review.Id" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                     }

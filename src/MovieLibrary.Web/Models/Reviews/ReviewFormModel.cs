@@ -14,6 +14,6 @@ namespace MovieLibrary.Web.Models.Reviews
         [StringLength(DescriptionMaxLength, MinimumLength = DefaultMinLength)]
         public string Content { get; set; } = null!;
 
-        public string? AuthorName { get; set; }
+        public string? AuthorEmail { get; set; }
     }
 }
