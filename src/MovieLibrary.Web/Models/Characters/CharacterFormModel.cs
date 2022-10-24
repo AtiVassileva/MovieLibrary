@@ -25,5 +25,7 @@ namespace MovieLibrary.Web.Models.Characters
         [Required]
         [StringLength(DescriptionMaxLength, MinimumLength = DefaultMinLength)]
         public string Description { get; set; } = null!;
+
+        public Guid? CreatorId { get; set; }
     }
 }

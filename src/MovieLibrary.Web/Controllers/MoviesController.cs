@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Models;
@@ -9,6 +7,8 @@ using MovieLibrary.Web.Models.Characters;
 using MovieLibrary.Web.Models.Genres;
 using MovieLibrary.Web.Models.Movies;
 using MovieLibrary.Web.Models.Reviews;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace MovieLibrary.Web.Controllers
 {
@@ -112,7 +112,7 @@ namespace MovieLibrary.Web.Controllers
             }
 
             var movie = _mapper.Map<Movie>(movieFormModel);
-            movie.CreatorId = User.GetId();
+            movie.CreatorId = this.User.GetId();
             _context.Add(movie);
             await _context.SaveChangesAsync();
 
@@ -144,7 +144,7 @@ namespace MovieLibrary.Web.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes, GenreId")] Movie movie)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Overview,ImageUrl,PremiereDate,Director,Likes, GenreId, CreatorId")] Movie movie)
         {
             if (id != movie.Id)
             {
@@ -173,7 +173,7 @@ namespace MovieLibrary.Web.Controllers
 
                 throw;
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new {id = movie.Id});
         }
 
         [HttpPost]

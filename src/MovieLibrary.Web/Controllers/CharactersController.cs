@@ -93,7 +93,7 @@ namespace MovieLibrary.Web.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name, ImageUrl,Description,ActorName")] Character character)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name, ImageUrl,Description,ActorName, CreatorId")] Character character)
         {
             if (id != character.Id)
             {
