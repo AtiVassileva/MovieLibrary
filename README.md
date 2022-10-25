@@ -36,4 +36,4 @@ CSS 3
 FontAwesome
 
 # Design
-- Template creddit: https://themewagon.com/themes/free-bootstrap-4-html5-gaming-anime-website-template-anime/
+- Template credit: https://themewagon.com/themes/free-bootstrap-4-html5-gaming-anime-website-template-anime/
