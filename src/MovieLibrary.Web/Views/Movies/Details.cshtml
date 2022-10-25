@@ -55,21 +55,24 @@
                             </div>
                         </div>
                         <div class="anime__details__btn">
-                            @if (this.User.GetId() == Model.CreatorId)
+                            @if (this.User.Identity!.IsAuthenticated)
                             {
-                                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</a>
-                                <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                @if (this.User.GetId() == Model.CreatorId)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                }
+                                else
+                                {
+                                    <a asp-action="Like" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="fa fa-thumbs-up"></i> Like</a>
+                                }
                             }
-                            else
-                            {
-                                <a asp-action="Like" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="fa fa-thumbs-up"></i> Like</a>
-                            }
-                            <br />
-                            <br />
+                            <br/>
+                            <br/>
                             @if (Model.Characters.Any())
                             {
                                 <h4>Characters:</h4>
-                                <br />
+                                <br/>
                                 <div class="anime__details__widget">
                                     <div class="row">
                                         <div class="col-lg-8 col-md-8">
@@ -101,7 +104,7 @@
                                 <h6>
                                     @review.Title <span> - @review.AuthorEmail</span>
 
-                                    @if (review.AuthorEmail == this.User.Identity!.Name)
+                                    @if (this.User.Identity!.IsAuthenticated && review.AuthorEmail == this.User.Identity!.Name)
                                     {
                                         <a asp-action="DeleteReview" asp-route-id="@review.Id" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                     }
