@@ -8,8 +8,11 @@ username: testuser1@abv.bg, password: testuser1@abv.bgR
 Regular User
 
 👤 Account - register, login, logout, update their profile info.
-🎬Movies - add, edit or delete movies 
-🦸‍♂️Characters - add, edit, delete characters or assign characters to a movie
+
+🎬Movies - add, edit or delete movies.
+
+🦸‍♂️Characters - add, edit, delete characters or assign characters to a movie.
+
 📡Reviews - add or delete reviews written by them for a particular movie.
 
 # Technology stack
