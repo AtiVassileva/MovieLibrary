@@ -35,7 +35,7 @@ namespace MovieLibrary.Web.MappingConfiguration
 
             // reviews
             this.CreateMap<Review, ReviewFormModel>()
-                .ForMember(r => r.AuthorEmail, 
+                .ForMember(model => model.AuthorEmail, 
                     cfg => cfg.MapFrom(r => r.Author!.UserName))
                 .ReverseMap();
 

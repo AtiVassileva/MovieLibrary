@@ -53,13 +53,8 @@ namespace MovieLibrary.Web.Controllers
                 .ProjectTo<MovieDetailedModel>(_configuration)
                 .FirstOrDefaultAsync(m => m.Id == movie.Id);
 
-            movieModel!.Reviews = await _context.Reviews
-                .Where(r => r.MovieId == movie.Id)
-                .ProjectTo<ReviewFormModel>(_configuration)
-                .ToListAsync();
-
             movieModel!.Characters = await _context.MovieCharacters
-                    .Where(ch => ch.MovieId == movie.Id)
+                .Where(ch => ch.MovieId == movie.Id)
                 .ProjectTo<CharacterMovieModel>(_configuration)
                 .ToListAsync();
 
@@ -188,6 +183,14 @@ namespace MovieLibrary.Web.Controllers
                 return NotFound();
             }
 
+            var currentUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == this.User.GetId());
+
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
+
             var movieModel = _mapper.Map<MovieDetailedModel>(movie);
 
             movieModel.Reviews = _mapper
@@ -202,7 +205,10 @@ namespace MovieLibrary.Web.Controllers
 
             var review = _mapper.Map<Review>(reviewModel);
             review.MovieId = movieId;
-            review.AuthorId = this.User.GetId();
+            review.AuthorId = currentUser.Id;
+            review.Author = currentUser;
+
+            currentUser.Reviews.Add(review);
 
             movie.Reviews.Add(review);
             _context.Add(review);
